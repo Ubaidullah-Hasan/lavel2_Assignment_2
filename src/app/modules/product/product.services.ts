@@ -16,8 +16,17 @@ const getSingleProductFromDB = async (id: string) => {
     return result;
 }
 
+const updateSingleProductIntoDB = async (id: string, dataForUpdate: TProduct) => {
+    const result = await ProductModel.findByIdAndUpdate(id, { $set: dataForUpdate }, { new: true });
+    if (!result) {
+        throw new Error("Product not found");
+    }
+    return result;
+}
+
 export const productServices = {
     createProductIntoDB,
     getAllProductsIntoDB,
     getSingleProductFromDB,
+    updateSingleProductIntoDB,
 }
