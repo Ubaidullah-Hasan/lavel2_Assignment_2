@@ -15,7 +15,6 @@ app.use(express.json());
 
 // application route
 app.use("/api", productRoute);
-app.use("/api", productRoute);
 
 
 
