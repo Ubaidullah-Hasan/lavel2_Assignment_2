@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import { productRoute } from "./app/modules/product/product.route";
 import { orderRoute } from "./app/modules/order/order.route";
@@ -17,4 +17,12 @@ app.use("/api/orders", orderRoute);
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
+});
+
+
+app.use((req:Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found'
+  });
 });
