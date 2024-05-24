@@ -8,6 +8,22 @@ const createProductIntoDB = async (product: TProduct) => {
 
 const getAllProductsIntoDB = async () => {
     const result = await ProductModel.find({});
+    if(result.length === 0){
+        throw new Error("Product not available");
+    }
+    return result;
+}
+
+const getProductsByQueryFromDB = async (searchTerm: string) => {
+    const result = await ProductModel.find({
+        $or: [
+            { name: { $regex: searchTerm, $options: 'i' } },
+            { description: { $regex: searchTerm, $options: 'i' } },
+        ],
+    });
+    if (result.length === 0) {
+        throw new Error(`${searchTerm} not found`);
+    }
     return result;
 }
 
@@ -32,10 +48,13 @@ const deleteSingleProductFromDB = async (id: string) => {
     return result;
 }
 
+
+
 export const productServices = {
     createProductIntoDB,
     getAllProductsIntoDB,
     getSingleProductFromDB,
     updateSingleProductIntoDB,
     deleteSingleProductFromDB,
+    getProductsByQueryFromDB,
 }

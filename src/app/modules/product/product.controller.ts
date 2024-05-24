@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import { productServices } from "./product.services";
 import productSchemaValidationZod from "./product.zod_validation";
 
-const createProduct = async(req: Request, res: Response) => {
+const createProduct = async (req: Request, res: Response) => {
     try {
         const productData = req.body;
         const validateProduct = productSchemaValidationZod.parse(productData);
-        const result = await productServices.createProductIntoDB(validateProduct); 
+        const result = await productServices.createProductIntoDB(validateProduct);
         res.status(200).json({
             success: true,
             message: "Product created successfully",
@@ -26,20 +26,30 @@ const createProduct = async(req: Request, res: Response) => {
                 data: err
             });
         }
-        
+
     }
 }
 
-const getAllProducts = async(req: Request, res: Response) => {
-    try{
-        const result = await productServices.getAllProductsIntoDB();
-        res.status(200).json({
-            success: true,
-            message: "Products fetched successfully!",
-            data: result
-        })
+const getAllProducts = async (req: Request, res: Response) => {
+    try {
+        const { searchTerm } = req.query;
+        if (searchTerm) {
+            const products = await productServices.getProductsByQueryFromDB(searchTerm as string)
+            res.status(200).json({
+                success: true,
+                message: `Products matching search term ${searchTerm} fetched successfully!`,
+                data: products,
+            });
+        } else {
+            const result = await productServices.getAllProductsIntoDB();
+            res.status(200).json({
+                success: true,
+                message: "Products fetched successfully!",
+                data: result
+            })
+        }
     } catch (err: unknown) {
-        if(err instanceof Error){
+        if (err instanceof Error) {
             res.status(500).json({
                 success: false,
                 message: err.message || "Products does not retrieve",
@@ -52,12 +62,12 @@ const getAllProducts = async(req: Request, res: Response) => {
                 data: err
             });
         }
-        
+
     }
 }
 
-const getSingleProductById = async(req: Request, res: Response) => {
-    try{
+const getSingleProductById = async (req: Request, res: Response) => {
+    try {
         const id = req.params.productId;
         const result = await productServices.getSingleProductFromDB(id);
         res.status(200).json({
@@ -66,7 +76,7 @@ const getSingleProductById = async(req: Request, res: Response) => {
             data: result
         })
     } catch (err: unknown) {
-        if(err instanceof Error){
+        if (err instanceof Error) {
             res.status(500).json({
                 success: false,
                 message: err.message || "Products does not retrieve",
@@ -79,7 +89,7 @@ const getSingleProductById = async(req: Request, res: Response) => {
                 data: err
             });
         }
-        
+
     }
 }
 
@@ -137,6 +147,7 @@ const deleteSingleProductById = async (req: Request, res: Response) => {
 
     }
 }
+
 
 export const productController = {
     createProduct,
