@@ -7,10 +7,22 @@ const createOrderIntoDB = async (orderData: TOrder) => {
 };
 const getOrderDataFromDB = async () => {
   const result = await OrderModel.find({});
+  if (result.length === 0) {
+    throw new Error("Order not available!");
+  }
+  return result;
+};
+
+const getOrderDataByEmailFromDB = async (email: string) => {
+  const result = await OrderModel.find({ email: email });
+  if (result.length === 0) {
+    throw new Error("Order not available!");
+  }
   return result;
 };
 
 export const servicesOrder = {
   createOrderIntoDB,
   getOrderDataFromDB,
+  getOrderDataByEmailFromDB,
 };
