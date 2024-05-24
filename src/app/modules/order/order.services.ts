@@ -11,7 +11,7 @@ const createOrderIntoDB = async (orderData: TOrder) => {
   }
 
   if (product.inventory.quantity < orderData.quantity) {
-    throw new Error("Not enough quantity in stock");
+    throw new Error("Insufficient quantity available in inventory");
   }
 
   const newOrder = new OrderModel(orderData);
@@ -30,7 +30,7 @@ const createOrderIntoDB = async (orderData: TOrder) => {
 const getOrderDataFromDB = async () => {
   const result = await OrderModel.find({});
   if (result.length === 0) {
-    throw new Error("Order not available!");
+    throw new Error("Order not found");
   }
   return result;
 };
@@ -38,7 +38,7 @@ const getOrderDataFromDB = async () => {
 const getOrderDataByEmailFromDB = async (email: string) => {
   const result = await OrderModel.find({ email: email });
   if (result.length === 0) {
-    throw new Error("Order not available!");
+    throw new Error("Order not found");
   }
   return result;
 };
