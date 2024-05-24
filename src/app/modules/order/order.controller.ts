@@ -29,6 +29,32 @@ const createOrder = async (req: Request, res: Response) => {
   }
 };
 
+const getOrdersData = async (req: Request, res: Response) => {
+  try {
+    const result = await servicesOrder.getOrderDataFromDB();
+    res.status(200).json({
+      success: true,
+      message: "Orders fetched successfully!",
+      data: result,
+    });
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        success: false,
+        message: err.message || "Order does not retrive!",
+        data: err,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: "An unknown error occurred",
+        data: err,
+      });
+    }
+  }
+};
+
 export const orderController = {
   createOrder,
+  getOrdersData,
 };
